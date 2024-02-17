@@ -4,6 +4,7 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
+import { Login } from './pages/auth/Login';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
@@ -13,6 +14,19 @@ const router = createBrowserRouter([
   {
     path: '/',
     element: <App />,
+  },
+  {
+    path: '/login',
+    element: <Login />,
+  },
+  // {
+  //   path: '/register',
+  //   element: <Register />,
+  // },
+  //unknown route
+  {
+    path: '*',
+    element: <div>404 Not Found</div>,
   },
 ]);
 
