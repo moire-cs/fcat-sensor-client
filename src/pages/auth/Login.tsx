@@ -13,18 +13,25 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 
+export const Login = () => (
+  <div className="background">
+    <div className="flex items-center justify-center max-w-md mx-auto my-8">
+      <LoginForm />
+    </div>
+  </div>
+);
+
 const formSchema = z.object({
   email: z.string().email({ message: 'Invalid email' }),
   //password must be 8 characters long and contain 2 of the following: uppercase, lowercase, number, special character
   password: z
     .string()
     .regex(/^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/, {
-      message:
-        'Password Mst be 8 characters long and contain 2 of the following: uppercase, lowercase, number, special character',
+      message: 'invalid password',
     }),
 });
 
-export const Login = () => {
+const LoginForm = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -47,11 +54,9 @@ export const Login = () => {
               <FormLabel>Email</FormLabel>
               <FormControl>
                 <Input {...field} />
-                <FormDescription>Enter your email</FormDescription>
-                <FormMessage>
-                  {form.formState.errors.email?.message}
-                </FormMessage>
               </FormControl>
+              <FormMessage>{form.formState.errors.email?.message}</FormMessage>
+              <FormDescription>Enter your email</FormDescription>
             </FormItem>
           )}
         />
@@ -63,14 +68,14 @@ export const Login = () => {
               <FormLabel>Password</FormLabel>
               <FormControl>
                 <Input type="password" {...field} />
-                <FormDescription>
-                  Must be 8 characters long and contain 2 of the following:
-                  uppercase, lowercase, number, special character
-                </FormDescription>
-                <FormMessage>
-                  {form.formState.errors.password?.message}
-                </FormMessage>
               </FormControl>
+              <FormMessage>
+                {form.formState.errors.password?.message}
+              </FormMessage>
+              <FormDescription>
+                Must be 8 characters long and contain 2 of the following:
+                uppercase, lowercase, number, special character
+              </FormDescription>
             </FormItem>
           )}
         />
