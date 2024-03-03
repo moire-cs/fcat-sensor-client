@@ -12,6 +12,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { login } from '@/routes/users';
 
 export const Login = () => (
   <div className="background">
@@ -23,12 +24,15 @@ export const Login = () => (
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Invalid email' }),
-  //password must be 8 characters long and contain 2 of the following: uppercase, lowercase, number, special character
+  //password req: 8-20 chars, 3 out of 4 of the following: 1 uppercase, 1 lowercase, 1 number, 1 special char  password: z
   password: z
     .string()
-    .regex(/^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/, {
-      message: 'invalid password',
-    }),
+    .regex(
+      /^(?=(.*[A-Z])?)(?=(.*[a-z])?)(?=(.*\d)?)(?=(.*[!@#$%^&*()_+])?)[A-Za-z\d!@#$%^&*()_+]{8,20}$/,
+      {
+        message: 'invalid password',
+      },
+    ),
 });
 
 const LoginForm = () => {
@@ -39,9 +43,12 @@ const LoginForm = () => {
       password: '',
     },
   });
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    //TODO send request, this will only be called if the form is valid
-    console.log(values);
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    const loginResponse = await login(values);
+    if (!loginResponse) {
+      return;
+    }
+    const { token, userId } = loginResponse.data;
   };
   return (
     <Form {...form}>
@@ -73,7 +80,7 @@ const LoginForm = () => {
                 {form.formState.errors.password?.message}
               </FormMessage>
               <FormDescription>
-                Must be 8 characters long and contain 2 of the following:
+                Must be 8-20 characters long and contain 3 of the following:
                 uppercase, lowercase, number, special character
               </FormDescription>
             </FormItem>
