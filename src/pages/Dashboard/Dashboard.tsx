@@ -1,3 +1,4 @@
+import { DynamicPlotMap } from '@/components/maps/DynamicPlotMap';
 import { Header } from '@/components/ui/header';
 import { useState } from 'react';
 
@@ -9,11 +10,9 @@ export const Dashboard = () => {
       <Header />
       <div className="flex justify-center">
         <div className=" w-5/6">
-          <h1
-            className="font-bold italic tracking-tighter text-4xl pt-8"
-            style={{ fontFamily: 'Franklin Gothic ATF' }}
-          >
+          <h1 className="font-bold  tracking-tighter text-4xl pt-8">
             Dashboard
+            <DynamicPlotMap />
           </h1>
         </div>
       </div>
