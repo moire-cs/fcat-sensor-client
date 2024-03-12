@@ -5,6 +5,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import { Login } from './pages/auth/Login';
+import { Dashboard } from './pages/Dashboard/Dashboard';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
@@ -24,6 +25,10 @@ const router = createBrowserRouter([
   //   element: <Register />,
   // },
   //unknown route
+  {
+    path: '/dashboard',
+    element: <Dashboard />,
+  },
   {
     path: '*',
     element: <div>404 Not Found</div>,
