@@ -24,11 +24,11 @@ export const SensorNode = ({ plotId }: { plotId: string }) => {
         onClick={onClickHandler}
         className="border p-1 rounded-lg bg-gradient-to-r from-green-200 to-green-100 hover:transition-all hover:to-green-200 "
       >
-        Node
+        Node {plotId}
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Node Details</DialogTitle>
+          <DialogTitle>Node {plotId} Details</DialogTitle>
           <DialogDescription>
             Various details about the node will be displayed here.
           </DialogDescription>

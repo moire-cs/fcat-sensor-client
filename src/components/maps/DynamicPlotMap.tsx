@@ -1,7 +1,13 @@
 import { SetStateAction, memo, useCallback, useState } from 'react';
-import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api';
+import {
+  GoogleMap,
+  InfoWindowF,
+  Marker,
+  useJsApiLoader,
+} from '@react-google-maps/api';
 import api from '@/mapsapi.env.json';
 import { Plot } from '@/lib/types';
+import { SensorNode } from '../tables/columns/sensorNode';
 //add maps api key to src/mapsapi.env.json file. in production, gotta protect this key with web URL!
 
 export const DynamicPlotMap = ({
@@ -11,7 +17,7 @@ export const DynamicPlotMap = ({
 }: {
   plots: Array<Plot>;
   selectedPlot: string | null;
-  setSelectedPlot: (string: null) => void;
+  setSelectedPlot: (val: string | null) => void;
 }) => {
   const [data, setData] = useState([]);
   const { isLoaded } = useJsApiLoader({
@@ -56,13 +62,28 @@ export const DynamicPlotMap = ({
           // onLoad={onLoad}
         >
           {plots.map((plot) => (
-            <Marker
-              key={plot.id}
-              position={{
-                lat: plot.location.latitude,
-                lng: plot.location.longitude,
-              }}
-            />
+            <>
+              <Marker
+                key={plot.id}
+                position={{
+                  lat: plot.location.latitude,
+                  lng: plot.location.longitude,
+                }}
+                onClick={() => setSelectedPlot(plot.id)}
+              >
+                {selectedPlot === plot.id ? (
+                  <InfoWindowF
+                    position={{
+                      lat: plot.location.latitude,
+                      lng: plot.location.longitude,
+                    }}
+                    onCloseClick={() => setSelectedPlot(null)}
+                  >
+                    <SensorNode plotId={plot.id} />
+                  </InfoWindowF>
+                ) : null}
+              </Marker>
+            </>
           ))}
         </GoogleMap>
       ) : (
