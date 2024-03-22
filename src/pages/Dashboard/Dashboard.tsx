@@ -9,8 +9,8 @@ export const Dashboard = () => {
   return (
     <>
       <Header />
-      <div className="flex justify-center">
-        <div className=" w-5/6">
+      <div className="flex justify-center ">
+        <div className=" w-5/6 bg-white drop-shadow-lg  p-10 pt-0 mt-0 m-10">
           <h1 className="font-bold  tracking-tighter text-4xl pt-8">
             Dashboard
             <DynamicPlotMap plots={testPlots} />

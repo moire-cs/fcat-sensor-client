@@ -25,7 +25,7 @@ export const DynamicPlotMap = ({ plots }: { plots: Array<Plot> }) => {
     setMap(null);
   }, []);
   return (
-    <div style={{ height: 350 }}>
+    <div style={{ height: 450 }}>
       {isLoaded ? (
         <GoogleMap
           mapContainerStyle={{ width: '100%', height: '100%' }}
