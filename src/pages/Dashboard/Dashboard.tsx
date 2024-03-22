@@ -6,6 +6,7 @@ import { useState } from 'react';
 
 export const Dashboard = () => {
   const [data, setData] = useState([]);
+  const [selectedPlot, setSelectedPlot] = useState<string | null>(null);
 
   return (
     <>
@@ -15,8 +16,16 @@ export const Dashboard = () => {
           <h1 className="font-bold  tracking-tighter text-4xl pt-8">
             Dashboard
           </h1>
-          <DynamicPlotMap plots={testPlots} />
-          <DynamicPlotTable plots={testPlots} />
+          <DynamicPlotMap
+            setSelectedPlot={setSelectedPlot}
+            selectedPlot={selectedPlot}
+            plots={testPlots}
+          />
+          <DynamicPlotTable
+            setSelectedPlot={setSelectedPlot}
+            selectedPlot={selectedPlot}
+            plots={testPlots}
+          />
         </div>
       </div>
     </>
@@ -29,8 +38,9 @@ const testPlots: Array<Plot> = [
     id: '1',
     nodeID: '1',
     location: {
-      latitude: 0.38955848016674315,
-      longitude: -79.68464785311586,
+      //29.93654673278375, -90.12152118045245
+      latitude: 29.93654673278375,
+      longitude: -90.12152118045245,
     },
     description: 'plot1 description',
     alerts: ['Low Battery'],
@@ -39,8 +49,9 @@ const testPlots: Array<Plot> = [
     id: '2',
     nodeID: '2',
     location: {
-      latitude: 0.38945848016674315,
-      longitude: -79.68464785311586,
+      //29.936044552869703, -90.1228568038905
+      latitude: 29.936044552869703,
+      longitude: -90.1228568038905,
     },
     description: 'plot2 description',
     alerts: ['Unseen for 3 days, 4 hours'],
@@ -49,8 +60,9 @@ const testPlots: Array<Plot> = [
     id: '3',
     nodeID: '3',
     location: {
-      latitude: 0.38962848016674315,
-      longitude: -79.68464785311586,
+      //29.93710262064039, -90.12211926950171
+      latitude: 29.93710262064039,
+      longitude: -90.12211926950171,
     },
     description: 'plot3 description',
   },
@@ -58,8 +70,9 @@ const testPlots: Array<Plot> = [
     id: '4',
     nodeID: '4',
     location: {
-      latitude: 0.38965848016674315,
-      longitude: -79.68464785311586,
+      //29.93576795494505, -90.12191474188661
+      latitude: 29.93576795494505,
+      longitude: -90.12191474188661,
     },
     description: 'plot4 description',
   },

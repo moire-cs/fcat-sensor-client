@@ -13,13 +13,19 @@ import {
 } from '@/components/ui/dialog';
 import { TooltipContent } from '@radix-ui/react-tooltip';
 
-export const SensorNode = () => {
+export const SensorNode = ({ plotId }: { plotId: string }) => {
   const onClickHandler = () => {
     console.log('clicked');
+    console.log(plotId);
   };
   return (
     <Dialog>
-      <DialogTrigger>Node</DialogTrigger>
+      <DialogTrigger
+        onClick={onClickHandler}
+        className="border p-1 rounded-lg bg-gradient-to-r from-green-200 to-green-100 hover:transition-all hover:to-green-200 "
+      >
+        Node
+      </DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Node Details</DialogTitle>

@@ -4,22 +4,44 @@ import api from '@/mapsapi.env.json';
 import { Plot } from '@/lib/types';
 //add maps api key to src/mapsapi.env.json file. in production, gotta protect this key with web URL!
 
-export const DynamicPlotMap = ({ plots }: { plots: Array<Plot> }) => {
+export const DynamicPlotMap = ({
+  plots,
+  selectedPlot,
+  setSelectedPlot,
+}: {
+  plots: Array<Plot>;
+  selectedPlot: string | null;
+  setSelectedPlot: (string: null) => void;
+}) => {
   const [data, setData] = useState([]);
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
     googleMapsApiKey: api.MapsAPIKey,
   });
   const [map, setMap] = useState(null);
-  const onLoad = useCallback((map: any) => {
-    const bounds = new window.google.maps.LatLngBounds({
-      lat: 0.38965848016674315,
-      lng: -79.68464785311586,
-    });
-    map.fitBounds(bounds);
 
-    setMap(map);
-  }, []);
+  const getCenter = () => {
+    if (selectedPlot === null) {
+      return { lat: 29.936221571447604, lng: -90.12223460794621 };
+    }
+    const plot = plots.find((plot) => plot.id === selectedPlot);
+    if (plot === undefined) {
+      return { lat: 0.38965848016674315, lng: -79.68464785311586 };
+    }
+    return {
+      lat: plot.location.latitude,
+      lng: plot.location.longitude,
+    };
+  };
+
+  // const onLoad = useCallback((map: any) => {
+  //   const bounds = new window.google.maps.LatLngBounds({
+  //     lat: 29.936221571447604,
+  //     lng: -90.12223460794621,
+  //   });
+  //   map.fitBounds(bounds);
+  //   setMap(map);
+  // }, []);
 
   const onUnmount = useCallback((_map: any) => {
     setMap(null);
@@ -29,9 +51,9 @@ export const DynamicPlotMap = ({ plots }: { plots: Array<Plot> }) => {
       {isLoaded ? (
         <GoogleMap
           mapContainerStyle={{ width: '100%', height: '100%' }}
-          center={{ lat: 0.38965848016674315, lng: -79.68464785311586 }}
-          zoom={10}
-          onLoad={onLoad}
+          center={getCenter()}
+          zoom={17}
+          // onLoad={onLoad}
         >
           {plots.map((plot) => (
             <Marker
