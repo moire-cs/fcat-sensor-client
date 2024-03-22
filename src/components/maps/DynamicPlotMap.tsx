@@ -1,7 +1,7 @@
 import { SetStateAction, memo, useCallback, useState } from 'react';
 import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api';
 import api from '@/mapsapi.env.json';
-import { Plot } from '@/util/types';
+import { Plot } from '@/lib/types';
 //add maps api key to src/mapsapi.env.json file. in production, gotta protect this key with web URL!
 
 export const DynamicPlotMap = ({ plots }: { plots: Array<Plot> }) => {
@@ -36,7 +36,10 @@ export const DynamicPlotMap = ({ plots }: { plots: Array<Plot> }) => {
           {plots.map((plot) => (
             <Marker
               key={plot.id}
-              position={{ lat: plot.latitude, lng: plot.longitude }}
+              position={{
+                lat: plot.location.latitude,
+                lng: plot.location.longitude,
+              }}
             />
           ))}
         </GoogleMap>
