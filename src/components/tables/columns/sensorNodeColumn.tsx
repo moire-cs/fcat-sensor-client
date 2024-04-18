@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/dialog';
 import { TooltipContent } from '@radix-ui/react-tooltip';
 
-export const SensorNode = ({ plotId }: { plotId: string }) => {
+export const SensorNodeColumn = ({ plotId }: { plotId: string }) => {
   const onClickHandler = () => {
     console.log('clicked');
     console.log(plotId);

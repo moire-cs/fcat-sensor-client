@@ -7,7 +7,7 @@ import {
 } from '@react-google-maps/api';
 import api from '@/mapsapi.env.json';
 import { Plot } from '@/lib/types';
-import { SensorNode } from '../tables/columns/sensorNode';
+import { SensorNodeColumn } from '../tables/columns/sensorNodeColumn';
 //add maps api key to src/mapsapi.env.json file. in production, gotta protect this key with web URL!
 
 export const DynamicPlotMap = ({
@@ -35,8 +35,8 @@ export const DynamicPlotMap = ({
       return { lat: 0.38965848016674315, lng: -79.68464785311586 };
     }
     return {
-      lat: plot.location.latitude,
-      lng: plot.location.longitude,
+      lat: plot.latitude,
+      lng: plot.longitude,
     };
   };
 
@@ -66,20 +66,20 @@ export const DynamicPlotMap = ({
               <Marker
                 key={plot.id}
                 position={{
-                  lat: plot.location.latitude,
-                  lng: plot.location.longitude,
+                  lat: plot.latitude,
+                  lng: plot.longitude,
                 }}
                 onClick={() => setSelectedPlot(plot.id)}
               >
                 {selectedPlot === plot.id ? (
                   <InfoWindowF
                     position={{
-                      lat: plot.location.latitude,
-                      lng: plot.location.longitude,
+                      lat: plot.latitude,
+                      lng: plot.longitude,
                     }}
                     onCloseClick={() => setSelectedPlot(null)}
                   >
-                    <SensorNode plotId={plot.id} />
+                    <SensorNodeColumn plotId={plot.id} />
                   </InfoWindowF>
                 ) : null}
               </Marker>

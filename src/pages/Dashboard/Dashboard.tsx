@@ -1,12 +1,51 @@
 import { DynamicPlotMap } from '@/components/maps/DynamicPlotMap';
-import { DynamicPlotTable } from '@/components/tables/DynamicPlotTable';
+import {
+  DynamicPlotTable,
+  DynamicTableData,
+} from '@/components/tables/DynamicPlotTable';
 import { Header } from '@/components/ui/header';
-import { Plot } from '@/lib/types';
-import { useState } from 'react';
+import { LastMeasurementsObject, SensorNode, Plot, Sensor } from '@/lib/types';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 export const Dashboard = () => {
-  const [data, setData] = useState([]);
   const [selectedPlot, setSelectedPlot] = useState<string | null>(null);
+  const [measurements, setMeasurements] = useState<LastMeasurementsObject>({
+    nodes: [],
+    sensors: [],
+    plots: [],
+  });
+  const [tableData, setTableData] = useState<DynamicTableData>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const fetch = await axios.get('/api/measurements/latest');
+      console.log(fetch.data);
+      setMeasurements(fetch.data);
+      const lastMeasurements = fetch.data as LastMeasurementsObject;
+      const tableData: DynamicTableData = [];
+      lastMeasurements.plots.forEach((plot) => {
+        const _node = lastMeasurements.nodes.find(
+          (_node) => _node.node.id === plot.id,
+        );
+        const node = _node?.node;
+        const sensors = lastMeasurements.sensors;
+        const onlyLastMeasurements = _node?.lastMeasurements;
+        if (node === undefined || onlyLastMeasurements === undefined) {
+          return;
+        }
+        tableData.push({
+          node,
+          ...plot,
+          sensors,
+          lastMeasurements: onlyLastMeasurements,
+        });
+      });
+
+      setTableData(tableData);
+    };
+    fetchData();
+  }, []);
 
   return (
     <>
@@ -19,61 +58,15 @@ export const Dashboard = () => {
           <DynamicPlotMap
             setSelectedPlot={setSelectedPlot}
             selectedPlot={selectedPlot}
-            plots={testPlots}
+            plots={measurements.plots}
           />
           <DynamicPlotTable
             setSelectedPlot={setSelectedPlot}
             selectedPlot={selectedPlot}
-            plots={testPlots}
+            data={tableData}
           />
         </div>
       </div>
     </>
   );
 };
-
-const testPlots: Array<Plot> = [
-  //plots should be randomly close to lat: 0.38965848016674315, lng: -79.68464785311586
-  {
-    id: '1',
-    nodeID: '1',
-    location: {
-      //29.93654673278375, -90.12152118045245
-      latitude: 29.93654673278375,
-      longitude: -90.12152118045245,
-    },
-    description: 'plot1 description',
-    alerts: ['Low Battery'],
-  },
-  {
-    id: '2',
-    nodeID: '2',
-    location: {
-      //29.936044552869703, -90.1228568038905
-      latitude: 29.936044552869703,
-      longitude: -90.1228568038905,
-    },
-    description: 'plot2 description',
-    alerts: ['Unseen for 3 days, 4 hours'],
-  },
-  {
-    id: '3',
-    nodeID: '3',
-    location: {
-      //29.93710262064039, -90.12211926950171
-      latitude: 29.93710262064039,
-      longitude: -90.12211926950171,
-    },
-    description: 'plot3 description',
-  },
-  {
-    id: '4',
-    nodeID: '4',
-    location: {
-      //29.93576795494505, -90.12191474188661
-      latitude: 29.93576795494505,
-      longitude: -90.12191474188661,
-    },
-    description: 'plot4 description',
-  },
-];
