@@ -40,7 +40,7 @@
     "test": "craco test",
     "eject": "craco eject",
     "dev": "concurrently \"npm start\" \"npm run server\"",
-    "server": "cd ../fcat-sensor-server && npm run start"
+    "server": "cd ../fcat-sensor-server && npm run devConcurrent"
   },
   "eslintConfig": {
     "extends": [

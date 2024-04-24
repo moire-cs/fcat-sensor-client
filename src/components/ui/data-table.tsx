@@ -16,12 +16,14 @@ import {
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
+  highlightRow?: (row: TData) => boolean;
   data: TData[];
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  highlightRow = () => false,
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
@@ -54,6 +56,11 @@ export function DataTable<TData, TValue>({
               <TableRow
                 key={row.id}
                 data-state={row.getIsSelected() && 'selected'}
+                className={
+                  highlightRow(row.original)
+                    ? 'bg-green-100 hover:bg-green-50'
+                    : ''
+                }
               >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell key={cell.id}>

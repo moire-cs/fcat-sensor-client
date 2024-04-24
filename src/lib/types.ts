@@ -21,6 +21,8 @@ export interface MessageEntry {
   data: string;
   sk: string | null;
   sensorID: string | null;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface Message extends MessageEntry {

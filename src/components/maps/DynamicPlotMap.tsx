@@ -1,4 +1,4 @@
-import { SetStateAction, memo, useCallback, useState } from 'react';
+import { SetStateAction, memo, useCallback, useEffect, useState } from 'react';
 import {
   GoogleMap,
   InfoWindowF,
@@ -7,7 +7,8 @@ import {
 } from '@react-google-maps/api';
 import api from '@/mapsapi.env.json';
 import { Plot } from '@/lib/types';
-import { SensorNodeColumn } from '../tables/columns/sensorNodeColumn';
+import { SensorNodeCell } from '../tables/cell/sensorNodeCell';
+import e from 'express';
 //add maps api key to src/mapsapi.env.json file. in production, gotta protect this key with web URL!
 
 export const DynamicPlotMap = ({
@@ -25,41 +26,50 @@ export const DynamicPlotMap = ({
     googleMapsApiKey: api.MapsAPIKey,
   });
   const [map, setMap] = useState(null);
+  const [selectedPlotOpen, setSelectedPlotOpen] = useState(false);
+  useEffect(() => {
+    setSelectedPlotOpen(selectedPlot !== null);
+  }, [selectedPlot]);
 
   const getCenter = () => {
-    if (selectedPlot === null) {
-      return { lat: 29.936221571447604, lng: -90.12223460794621 };
-    }
-    const plot = plots.find((plot) => plot.id === selectedPlot);
-    if (plot === undefined) {
-      return { lat: 0.38965848016674315, lng: -79.68464785311586 };
-    }
+    const lat = plots.reduce((acc, curr) => acc + curr.latitude, 0);
+    const lng = plots.reduce((acc, curr) => acc + curr.longitude, 0);
     return {
-      lat: plot.latitude,
-      lng: plot.longitude,
+      lat: lat / plots.length,
+      lng: lng / plots.length,
     };
   };
 
-  // const onLoad = useCallback((map: any) => {
-  //   const bounds = new window.google.maps.LatLngBounds({
-  //     lat: 29.936221571447604,
-  //     lng: -90.12223460794621,
-  //   });
-  //   map.fitBounds(bounds);
-  //   setMap(map);
-  // }, []);
+  const getZoom = () => {
+    const center = getCenter();
+    const maxLat = Math.max(...plots.map((plot) => plot.latitude));
+    const minLat = Math.min(...plots.map((plot) => plot.latitude));
+    const maxLng = Math.max(...plots.map((plot) => plot.longitude));
+    const minLng = Math.min(...plots.map((plot) => plot.longitude));
+    const latDiff = Math.abs(maxLat - minLat);
+    const lngDiff = Math.abs(maxLng - minLng);
+    const latZoom = Math.floor(Math.log2(360 / latDiff));
+    const lngZoom = Math.floor(Math.log2(360 / lngDiff));
+    return Math.min(latZoom, lngZoom);
+  };
 
   const onUnmount = useCallback((_map: any) => {
     setMap(null);
   }, []);
   return (
-    <div style={{ height: 450 }}>
+    <div
+      onBlur={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget)) {
+          setSelectedPlot(null);
+        }
+      }}
+      style={{ height: 450 }}
+    >
       {isLoaded ? (
         <GoogleMap
           mapContainerStyle={{ width: '100%', height: '100%' }}
           center={getCenter()}
-          zoom={17}
-          // onLoad={onLoad}
+          zoom={getZoom()}
         >
           {plots.map((plot) => (
             <>
@@ -69,17 +79,19 @@ export const DynamicPlotMap = ({
                   lat: plot.latitude,
                   lng: plot.longitude,
                 }}
-                onClick={() => setSelectedPlot(plot.id)}
+                onClick={() => {
+                  setSelectedPlot(plot.id);
+                }}
               >
-                {selectedPlot === plot.id ? (
+                {selectedPlot === plot.id && selectedPlotOpen ? (
                   <InfoWindowF
                     position={{
                       lat: plot.latitude,
                       lng: plot.longitude,
                     }}
-                    onCloseClick={() => setSelectedPlot(null)}
+                    onCloseClick={() => setSelectedPlotOpen(false)}
                   >
-                    <SensorNodeColumn plotId={plot.id} />
+                    <SensorNodeCell plotId={plot.id} />
                   </InfoWindowF>
                 ) : null}
               </Marker>
@@ -92,3 +104,7 @@ export const DynamicPlotMap = ({
     </div>
   );
 };
+export const MemoizedDynamicPlotMap = memo(
+  DynamicPlotMap,
+  (prev, next) => prev.selectedPlot === next.selectedPlot,
+);
