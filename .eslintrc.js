@@ -15,7 +15,6 @@ module.exports = {
     'no-unreachable': 'warn',
     'no-unexpected-multiline': 'warn',
     'no-extra-semi': 'warn',
-    'no-extra-parens': 'warn',
     'no-extra-boolean-cast': 'warn',
     'arrow-body-style': ['error'],
     'arrow-parens': ['error'],
