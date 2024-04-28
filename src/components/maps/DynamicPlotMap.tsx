@@ -8,7 +8,12 @@ import {
 import api from '@/mapsapi.env.json';
 import { Plot } from '@/lib/types';
 import { SensorNodeCell } from '../tables/cell/sensorNodeCell';
-import e from 'express';
+import {
+  Language,
+  getLocalLanguage,
+  useLanguage,
+} from '@/LocalizationProvider';
+import { decodeCombined } from '@/lib/utils';
 //add maps api key to src/mapsapi.env.json file. in production, gotta protect this key with web URL!
 
 export const DynamicPlotMap = ({
@@ -21,15 +26,25 @@ export const DynamicPlotMap = ({
   setSelectedPlot: (val: string | null) => void;
 }) => {
   const [data, setData] = useState([]);
+  const [initialLanguage] = useState<Language>(getLocalLanguage());
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
     googleMapsApiKey: api.MapsAPIKey,
+    language: initialLanguage,
   });
   const [map, setMap] = useState(null);
   const [selectedPlotOpen, setSelectedPlotOpen] = useState(false);
   useEffect(() => {
     setSelectedPlotOpen(selectedPlot !== null);
   }, [selectedPlot]);
+
+  const [isLanguageChanged, setIsLanguageChanged] = useState(false);
+  const { language } = useLanguage();
+  useEffect(() => {
+    if (language !== getLocalLanguage()) {
+      setIsLanguageChanged(true);
+    }
+  }, [language]);
 
   const getCenter = () => {
     const lat = plots.reduce((acc, curr) => acc + curr.latitude, 0);
@@ -57,51 +72,61 @@ export const DynamicPlotMap = ({
     setMap(null);
   }, []);
   return (
-    <div
-      onBlur={(e) => {
-        if (!e.currentTarget.contains(e.relatedTarget)) {
-          setSelectedPlot(null);
-        }
-      }}
-      style={{ height: 450 }}
-    >
-      {isLoaded ? (
-        <GoogleMap
-          mapContainerStyle={{ width: '100%', height: '100%' }}
-          center={getCenter()}
-          zoom={getZoom()}
-        >
-          {plots.map((plot) => (
-            <>
-              <Marker
-                key={plot.id}
-                position={{
-                  lat: plot.latitude,
-                  lng: plot.longitude,
-                }}
-                onClick={() => {
-                  setSelectedPlot(plot.id);
-                }}
-              >
-                {selectedPlot === plot.id && selectedPlotOpen ? (
-                  <InfoWindowF
-                    position={{
-                      lat: plot.latitude,
-                      lng: plot.longitude,
-                    }}
-                    onCloseClick={() => setSelectedPlotOpen(false)}
-                  >
-                    <SensorNodeCell plotId={plot.id} />
-                  </InfoWindowF>
-                ) : null}
-              </Marker>
-            </>
-          ))}
-        </GoogleMap>
-      ) : (
-        <></>
+    <>
+      {isLanguageChanged && (
+        <p>
+          {decodeCombined(
+            '[en]Language changed, please reload the page to reload map.[es]Idioma cambiado, por favor recargue la página para recargar el mapa.',
+            language,
+          )}
+        </p>
       )}
-    </div>
+      <div
+        onBlur={(e) => {
+          if (!e.currentTarget.contains(e.relatedTarget)) {
+            setSelectedPlot(null);
+          }
+        }}
+        style={{ height: 450 }}
+      >
+        {isLoaded ? (
+          <GoogleMap
+            mapContainerStyle={{ width: '100%', height: '100%' }}
+            center={getCenter()}
+            zoom={getZoom()}
+          >
+            {plots.map((plot) => (
+              <>
+                <Marker
+                  key={plot.id}
+                  position={{
+                    lat: plot.latitude,
+                    lng: plot.longitude,
+                  }}
+                  onClick={() => {
+                    setSelectedPlot(plot.id);
+                  }}
+                >
+                  {selectedPlot === plot.id && selectedPlotOpen ? (
+                    <InfoWindowF
+                      position={{
+                        lat: plot.latitude,
+                        lng: plot.longitude,
+                      }}
+                      onCloseClick={() => setSelectedPlotOpen(false)}
+                    >
+                      <SensorNodeCell plotId={plot.id} />
+                    </InfoWindowF>
+                  ) : null}
+                </Marker>
+              </>
+            ))}
+          </GoogleMap>
+        ) : (
+          <></>
+        )}
+      </div>
+    </>
   );
 };
 export const MemoizedDynamicPlotMap = memo(

@@ -7,30 +7,34 @@ import { Progress } from '../ui/progress';
 import { lastMeasurementsCell } from './cell/lastMeasurementsCell';
 import { useEffect, useState } from 'react';
 import { LastSeenCell } from './cell/lastSeenCell';
+import { Language } from '@/LocalizationProvider';
+import { decodeCombined } from '@/lib/utils';
 export const columnFactory: ({
   setSelectedPlot,
   selectedPlot,
+  language,
 }: {
   selectedPlot: string | null;
   setSelectedPlot: (val: string | null) => void;
+  language: Language;
 }) => ColumnDef<
   Plot & {
     node: SensorNode;
     sensors: Array<Sensor>;
     lastMeasurements: Array<Measurement>;
   }
->[] = ({ setSelectedPlot, selectedPlot }) => [
+>[] = ({ setSelectedPlot, selectedPlot, language }) => [
   {
-    header: 'Plot ID',
+    header: decodeCombined('[en]Plot ID[es]ID de Parcela', language),
     accessorKey: 'id',
   },
   {
-    header: 'Node',
+    header: decodeCombined('[en]Node[es]Nodo', language),
     cell: (cell) => <SensorNodeCell plotId={cell.getValue() as string} />,
     accessorKey: 'nodeID',
   },
   {
-    header: 'Last Seen',
+    header: decodeCombined('[en]Last Seen[es]Última vez vista', language),
     cell: (cell) => (
       <LastSeenCell
         lastSeen={new Date(cell.row.original.lastMeasurements[0].createdAt)}
@@ -38,7 +42,7 @@ export const columnFactory: ({
     ),
   },
   {
-    header: 'location',
+    header: decodeCombined('[en]Location[es]Ubicación', language),
     accessorKey: 'location',
     cell: (cell) => {
       const location = {
@@ -61,11 +65,14 @@ export const columnFactory: ({
     },
   },
   {
-    header: 'Description',
+    header: decodeCombined('[en]Description[es]Descripción', language),
     accessorKey: 'description',
   },
   {
-    header: 'Last Measurements',
+    header: decodeCombined(
+      '[en]Last Measurements[es]Últimas mediciones',
+      language,
+    ),
     cell: (cell) =>
       lastMeasurementsCell(
         cell.row.original.lastMeasurements,
@@ -78,14 +85,16 @@ export const DynamicPlotTable = ({
   data,
   selectedPlot,
   setSelectedPlot,
+  language,
 }: {
   data: DynamicTableData;
   selectedPlot: string | null;
   setSelectedPlot: (val: string | null) => void;
+  language: Language;
 }) => (
   <div>
     <DataTable
-      columns={columnFactory({ setSelectedPlot, selectedPlot })}
+      columns={columnFactory({ setSelectedPlot, selectedPlot, language })}
       data={data}
       highlightRow={(row) => row.id === selectedPlot}
     />

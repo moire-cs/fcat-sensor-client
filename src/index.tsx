@@ -5,7 +5,12 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import { Login } from './pages/auth/Login';
-import { Dashboard } from './pages/Dashboard/Dashboard';
+import { Plots } from './pages/Plots/Plots';
+import {
+  Language,
+  LanguageContext,
+  LocalizationProvider,
+} from './LocalizationProvider';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
@@ -18,7 +23,7 @@ const router = createBrowserRouter([
   },
   {
     path: '/',
-    element: <Dashboard />,
+    element: <Plots />,
   },
   {
     path: '*',
@@ -28,7 +33,9 @@ const router = createBrowserRouter([
 
 root.render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <LocalizationProvider>
+      <RouterProvider router={router} />
+    </LocalizationProvider>
   </React.StrictMode>,
 );
 
