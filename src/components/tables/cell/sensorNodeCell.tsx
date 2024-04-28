@@ -12,8 +12,11 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { TooltipContent } from '@radix-ui/react-tooltip';
+import { useLanguage } from '@/LocalizationProvider';
+import { decodeCombined } from '@/lib/utils';
 
 export const SensorNodeCell = ({ plotId }: { plotId: string }) => {
+  const { language } = useLanguage();
   const onClickHandler = () => {
     console.log('clicked');
     console.log(plotId);
@@ -24,7 +27,7 @@ export const SensorNodeCell = ({ plotId }: { plotId: string }) => {
         onClick={onClickHandler}
         className="border p-1 rounded-lg bg-gradient-to-r from-green-200 to-green-100 hover:transition-all hover:to-green-200 "
       >
-        Node {plotId}
+        {decodeCombined('[en]Nodes[es]Nodo', language)} {plotId}
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

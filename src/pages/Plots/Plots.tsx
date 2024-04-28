@@ -7,8 +7,10 @@ import { Header } from '@/components/ui/header';
 import { LastMeasurementsObject, SensorNode, Plot, Sensor } from '@/lib/types';
 import { useEffect, useMemo, useState } from 'react';
 import axios from 'axios';
+import { useLanguage } from '@/LocalizationProvider';
+import { decodeCombined } from '@/lib/utils';
 
-export const Dashboard = () => {
+export const Plots = () => {
   const [selectedPlot, setSelectedPlot] = useState<string | null>(null);
   const [measurements, setMeasurements] = useState<LastMeasurementsObject>({
     nodes: [],
@@ -17,6 +19,7 @@ export const Dashboard = () => {
   });
   const [tableData, setTableData] = useState<DynamicTableData>([]);
   const memoizedPlots = useMemo(() => measurements.plots, [measurements]);
+  const { language } = useLanguage();
 
   const fetchData = async () => {
     const fetch = await axios.get('/api/measurements/latest');
@@ -74,7 +77,7 @@ export const Dashboard = () => {
       <div className="flex justify-center ">
         <div className=" w-5/6 bg-white drop-shadow-lg  p-10 pt-0 mt-0 m-10">
           <h1 className="font-bold  tracking-tighter text-4xl pt-8">
-            Dashboard
+            {decodeCombined('[en]Plots[es]Parcelas', language)}
           </h1>
           {memoizedPlots.length > 0 && (
             <MemoizedDynamicPlotMap
@@ -87,6 +90,7 @@ export const Dashboard = () => {
             setSelectedPlot={setSelectedPlot}
             selectedPlot={selectedPlot}
             data={tableData}
+            language={language}
           />
         </div>
       </div>
