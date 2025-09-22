@@ -1,4 +1,5 @@
-import { MemoizedDynamicPlotMap } from '@/components/maps/DynamicPlotMap';
+import { MemoizedDynamicPlotMap } from '@/components/maps/DynamicLeafletMap';
+// import { MemoizedDynamicPlotMap } from '@/components/maps/DynamicPlotMap';
 import {
   DynamicPlotTable,
   DynamicTableData,
