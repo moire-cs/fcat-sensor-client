@@ -1,4 +1,6 @@
+// import for Leaflet map
 import { MemoizedDynamicPlotMap } from '@/components/maps/DynamicLeafletMap';
+// import for google maps
 // import { MemoizedDynamicPlotMap } from '@/components/maps/DynamicPlotMap';
 import {
   DynamicPlotTable,
