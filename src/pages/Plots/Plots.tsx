@@ -1,7 +1,7 @@
 // import for Leaflet map
-import { MemoizedDynamicPlotMap } from '@/components/maps/DynamicLeafletMap';
+import { MemoizedDynamicPlotMapLeaflet } from '@/components/maps/DynamicPlotMapLeaflet';
 // import for google maps
-// import { MemoizedDynamicPlotMap } from '@/components/maps/DynamicPlotMap';
+import { MemoizedDynamicPlotMapGoogle } from '@/components/maps/DynamicPlotMapGoogle';
 import {
   DynamicPlotTable,
   DynamicTableData,
@@ -83,7 +83,7 @@ export const Plots = () => {
             {decodeCombined('[en]Plots[es]Parcelas', language)}
           </h1>
           {memoizedPlots.length > 0 && (
-            <MemoizedDynamicPlotMap
+            <MemoizedDynamicPlotMapLeaflet
               setSelectedPlot={setSelectedPlot}
               selectedPlot={selectedPlot}
               plots={memoizedPlots}
