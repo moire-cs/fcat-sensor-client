@@ -87,7 +87,7 @@ export const DynamicPlotMap = ({
             setSelectedPlot(null);
           }
         }}
-        style={{ height: 450 }}
+        style={{ height: 600 }}
       >
         {isLoaded ? (
           <GoogleMap

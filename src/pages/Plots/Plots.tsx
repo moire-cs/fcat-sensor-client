@@ -83,14 +83,24 @@ export const Plots = () => {
       <Header />
       <div className="flex justify-center ">
         <div className=" w-5/6 bg-white drop-shadow-lg  p-10 pt-0 mt-0 m-10">
-          <h1 className="font-bold  tracking-tighter text-4xl pt-8">
-            {decodeCombined('[en]Plots[es]Parcelas', language)}
-            <Switch
-              id="mapSwitch"
-              checked={mapToggle}
-              onClick={() => setMapToggle(!mapToggle)}
-            />
-          </h1>
+          {/* Map Header */}
+          <div className="flex justify-between items-center">
+            {/* Plots title on left side */}
+            <h1 className="font-bold  tracking-tighter text-4xl pt-8">
+              {decodeCombined('[en]Plots[es]Parcelas', language)}
+            </h1>
+            {/* Toggle Map Switch on right side */}
+            <div className="flex items-center gap-2">
+              <label>
+                {decodeCombined('[en]Toggle Map[es]Alternar Mapa', language)}
+              </label>
+              <Switch
+                id="mapSwitch"
+                checked={mapToggle}
+                onClick={() => setMapToggle(!mapToggle)}
+              />
+            </div>
+          </div>
 
           {/* Show Leaflet Map by default */}
           {memoizedPlots.length > 0 && !mapToggle && (
@@ -109,6 +119,7 @@ export const Plots = () => {
               plots={memoizedPlots}
             />
           )}
+
           <DynamicPlotTable
             setSelectedPlot={setSelectedPlot}
             selectedPlot={selectedPlot}
