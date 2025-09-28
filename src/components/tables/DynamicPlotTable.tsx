@@ -4,7 +4,7 @@ import { CellContext, ColumnDef } from '@tanstack/react-table';
 import { LucideBatteryWarning } from 'lucide-react';
 import { SensorNodeCell } from './cell/sensorNodeCell';
 import { Progress } from '../ui/progress';
-import { lastMeasurementsCell } from './cell/lastMeasurementsCell';
+import { LastMeasurementsCell } from './cell/lastMeasurementsCell';
 import { useEffect, useState } from 'react';
 import { LastSeenCell } from './cell/lastSeenCell';
 import { Language } from '@/LocalizationProvider';
@@ -37,7 +37,7 @@ export const columnFactory: ({
     header: decodeCombined('[en]Last Seen[es]Última vez vista', language),
     cell: (cell) => (
       <LastSeenCell
-        lastSeen={new Date(cell.row.original.lastMeasurements[0].createdAt)}
+        lastSeen={new Date(cell.row?.original?.lastMeasurements[0]?.createdAt)}
       />
     ),
   },
@@ -50,6 +50,10 @@ export const columnFactory: ({
         longitude: cell.row.original.longitude,
       };
       const id = cell.row.original.id as string;
+      
+      console.log('Location Cell Row Original:', cell.row.original);
+      console.log('Location Cell Plot ID:', id);
+  
       return (
         <div
           onClick={() => {
@@ -64,21 +68,26 @@ export const columnFactory: ({
       );
     },
   },
-  {
-    header: decodeCombined('[en]Description[es]Descripción', language),
-    accessorKey: 'description',
-  },
+  
   {
     header: decodeCombined(
       '[en]Last Measurements[es]Últimas mediciones',
       language,
     ),
-    cell: (cell) =>
-      lastMeasurementsCell(
-        cell.row.original.lastMeasurements,
-        cell.row.original.sensors,
-      ),
+    cell: (cell) => {
+      console.log('Last Measurements Cell Row Original:', cell.row.original);
+      console.log('Last Measurements Cell Plot ID:', cell.row.original.id);
+  
+      return (
+        <LastMeasurementsCell
+          lastMeasurements={cell.row.original.lastMeasurements}
+          sensors={cell.row.original.sensors}
+          plotId={cell.row.original.id}  
+        />
+      );
+    },
   },
+     
 ];
 
 export const DynamicPlotTable = ({

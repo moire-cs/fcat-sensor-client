@@ -1,4 +1,6 @@
-import { MemoizedDynamicPlotMap } from '@/components/maps/DynamicPlotMap';
+import { MemoizedDynamicPlotMapLeaflet } from '@/components/maps/DynamicPlotMapLeaflet';
+import { MemoizedDynamicPlotMapGoogle } from '@/components/maps/DynamicPlotMapGoogle';
+import { Switch } from '@/components/ui/switch';
 import {
   DynamicPlotTable,
   DynamicTableData,
@@ -71,21 +73,46 @@ export const Plots = () => {
     });
   }, [measurements]);
 
+  // Variable that will control which map is showing
+  const [mapToggle, setMapToggle] = useState(false);
+
   return (
     <>
       <Header />
       <div className="flex justify-center ">
         <div className=" w-5/6 bg-white drop-shadow-lg  p-10 pt-0 mt-0 m-10">
-          <h1 className="font-bold  tracking-tighter text-4xl pt-8">
-            {decodeCombined('[en]Plots[es]Parcelas', language)}
-          </h1>
-          {memoizedPlots.length > 0 && (
-            <MemoizedDynamicPlotMap
-              setSelectedPlot={setSelectedPlot}
-              selectedPlot={selectedPlot}
-              plots={memoizedPlots}
-            />
-          )}
+          <div className="flex justify-between items-center">
+            <h1 className="font-bold  tracking-tighter text-4xl pt-8">
+              {decodeCombined('[en]Plots[es]Parcelas', language)}
+            </h1>
+            {/* Toggle Map Switch on right side */}
+            <div className="flex items-center gap-2">
+              <label>
+                {decodeCombined('[en]Toggle Map[es]Alternar Mapa', language)}
+              </label>
+              <Switch
+                id="mapSwitch"
+                checked={mapToggle}
+                onClick={() => setMapToggle(!mapToggle)}
+              />
+            </div>
+          </div>
+
+          {memoizedPlots.length > 0 &&
+            (mapToggle ? (
+              <MemoizedDynamicPlotMapGoogle
+                setSelectedPlot={setSelectedPlot}
+                selectedPlot={selectedPlot}
+                plots={memoizedPlots}
+              />
+            ) : (
+              <MemoizedDynamicPlotMapLeaflet
+                setSelectedPlot={setSelectedPlot}
+                selectedPlot={selectedPlot}
+                plots={memoizedPlots}
+              />
+            ))}
+
           <DynamicPlotTable
             setSelectedPlot={setSelectedPlot}
             selectedPlot={selectedPlot}

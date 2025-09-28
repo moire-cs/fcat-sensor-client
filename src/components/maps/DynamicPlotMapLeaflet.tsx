@@ -1,11 +1,16 @@
-import { SetStateAction, memo, useCallback, useEffect, useState } from 'react';
+/* Imports for Leaflet */
 import {
-  GoogleMap,
-  InfoWindowF,
+  MapContainer,
+  TileLayer,
   Marker,
-  useJsApiLoader,
-} from '@react-google-maps/api';
-import api from '@/mapsapi.env.json';
+  Popup,
+  useMapEvents,
+} from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
+import markerIconPng from 'leaflet/dist/images/marker-icon.png';
+import { Icon } from 'leaflet';
+
+import { SetStateAction, memo, useCallback, useEffect, useState } from 'react';
 import { Plot } from '@/lib/types';
 import { SensorNodeCell } from '../tables/cell/sensorNodeCell';
 import {
@@ -14,7 +19,6 @@ import {
   useLanguage,
 } from '@/LocalizationProvider';
 import { decodeCombined } from '@/lib/utils';
-//add maps api key to src/mapsapi.env.json file. in production, gotta protect this key with web URL!
 
 export const DynamicPlotMap = ({
   plots,
@@ -27,11 +31,6 @@ export const DynamicPlotMap = ({
 }) => {
   const [data, setData] = useState([]);
   const [initialLanguage] = useState<Language>(getLocalLanguage());
-  const { isLoaded } = useJsApiLoader({
-    id: 'google-map-script',
-    googleMapsApiKey: api.MapsAPIKey,
-    language: initialLanguage,
-  });
   const [map, setMap] = useState(null);
   const [selectedPlotOpen, setSelectedPlotOpen] = useState(false);
   useEffect(() => {
@@ -87,49 +86,69 @@ export const DynamicPlotMap = ({
             setSelectedPlot(null);
           }
         }}
-        style={{ height: 450 }}
+        style={{ height: 600 }}
       >
-        {isLoaded ? (
-          <GoogleMap
-            mapContainerStyle={{ width: '100%', height: '100%' }}
-            center={getCenter()}
-            zoom={getZoom()}
-          >
-            {plots.map((plot) => (
-              <>
-                <Marker
-                  key={plot.id}
-                  position={{
-                    lat: plot.latitude,
-                    lng: plot.longitude,
-                  }}
-                  onClick={() => {
-                    setSelectedPlot(plot.id);
-                  }}
-                >
-                  {selectedPlot === plot.id && selectedPlotOpen ? (
-                    <InfoWindowF
-                      position={{
-                        lat: plot.latitude,
-                        lng: plot.longitude,
-                      }}
-                      onCloseClick={() => setSelectedPlotOpen(false)}
-                    >
-                      <SensorNodeCell plotId={plot.id} />
-                    </InfoWindowF>
-                  ) : null}
-                </Marker>
-              </>
-            ))}
-          </GoogleMap>
-        ) : (
-          <></>
-        )}
+        {/* Leaflet Map Implementation */}
+        <MapContainer
+          center={getCenter()}
+          zoom={getZoom()}
+          style={{ height: '100%', width: '100%' }}
+        >
+          {/* OpenStreetMap Tile Layer */}
+          <TileLayer
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          />
+
+          {/* Markers for each plot */}
+          {plots.map((plot) => (
+            <Marker
+              key={plot.id}
+              position={{
+                lat: plot.latitude,
+                lng: plot.longitude,
+              }}
+              eventHandlers={{
+                click: () => {
+                  setSelectedPlot(plot.id);
+                },
+              }}
+              icon={new Icon({ iconUrl: markerIconPng, iconSize: [25, 41] })}
+            >
+              {/* Popup for selected plot */}
+              <Popup>
+                <SensorNodeCell plotId={plot.id} />
+                <div>
+                  <strong>Lat:</strong> {plot.latitude.toFixed(5)}
+                  <br />
+                  <strong>Lng:</strong> {plot.longitude.toFixed(5)}
+                  <br />
+                  <strong>Desc:</strong> {plot.description}
+                  <br />
+                </div>
+              </Popup>
+            </Marker>
+          ))}
+
+          {/* Listen for map clicks to clear selection */}
+          <MapClickHandler onClick={() => setSelectedPlotOpen(false)} />
+        </MapContainer>
       </div>
     </>
   );
 };
-export const MemoizedDynamicPlotMap = memo(
+
+export const MemoizedDynamicPlotMapLeaflet = memo(
   DynamicPlotMap,
   (prev, next) => prev.selectedPlot === next.selectedPlot,
 );
+
+// Handles map clicks to clear selection when clicking outside markers
+function MapClickHandler({ onClick }: { onClick: () => void }) {
+  useMapEvents({
+    click: () => {
+      onClick(); // clear selection
+    },
+  });
+  return null; // nothing visible
+}
