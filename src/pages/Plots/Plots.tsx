@@ -98,8 +98,8 @@ export const Plots = () => {
             </div>
           </div>
 
-          {memoizedPlots.length > 0 ? (
-            mapToggle ? (
+          {memoizedPlots.length > 0 &&
+            (mapToggle ? (
               <MemoizedDynamicPlotMapGoogle
                 setSelectedPlot={setSelectedPlot}
                 selectedPlot={selectedPlot}
@@ -111,8 +111,7 @@ export const Plots = () => {
                 selectedPlot={selectedPlot}
                 plots={memoizedPlots}
               />
-            )
-          ) : null}
+            ))}
 
           <DynamicPlotTable
             setSelectedPlot={setSelectedPlot}
