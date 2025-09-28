@@ -1,6 +1,4 @@
-// import for Leaflet map
 import { MemoizedDynamicPlotMapLeaflet } from '@/components/maps/DynamicPlotMapLeaflet';
-// import for google maps
 import { MemoizedDynamicPlotMapGoogle } from '@/components/maps/DynamicPlotMapGoogle';
 import { Switch } from '@/components/ui/switch';
 import {
@@ -83,9 +81,7 @@ export const Plots = () => {
       <Header />
       <div className="flex justify-center ">
         <div className=" w-5/6 bg-white drop-shadow-lg  p-10 pt-0 mt-0 m-10">
-          {/* Map Header */}
           <div className="flex justify-between items-center">
-            {/* Plots title on left side */}
             <h1 className="font-bold  tracking-tighter text-4xl pt-8">
               {decodeCombined('[en]Plots[es]Parcelas', language)}
             </h1>
@@ -102,23 +98,21 @@ export const Plots = () => {
             </div>
           </div>
 
-          {/* Show Leaflet Map by default */}
-          {memoizedPlots.length > 0 && !mapToggle && (
-            <MemoizedDynamicPlotMapLeaflet
-              setSelectedPlot={setSelectedPlot}
-              selectedPlot={selectedPlot}
-              plots={memoizedPlots}
-            />
-          )}
-
-          {/* Show Google Map when switch is clicked */}
-          {memoizedPlots.length > 0 && mapToggle && (
-            <MemoizedDynamicPlotMapGoogle
-              setSelectedPlot={setSelectedPlot}
-              selectedPlot={selectedPlot}
-              plots={memoizedPlots}
-            />
-          )}
+          {memoizedPlots.length > 0 ? (
+            mapToggle ? (
+              <MemoizedDynamicPlotMapGoogle
+                setSelectedPlot={setSelectedPlot}
+                selectedPlot={selectedPlot}
+                plots={memoizedPlots}
+              />
+            ) : (
+              <MemoizedDynamicPlotMapLeaflet
+                setSelectedPlot={setSelectedPlot}
+                selectedPlot={selectedPlot}
+                plots={memoizedPlots}
+              />
+            )
+          ) : null}
 
           <DynamicPlotTable
             setSelectedPlot={setSelectedPlot}
