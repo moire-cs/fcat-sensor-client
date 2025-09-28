@@ -2,6 +2,7 @@
 import { MemoizedDynamicPlotMapLeaflet } from '@/components/maps/DynamicPlotMapLeaflet';
 // import for google maps
 import { MemoizedDynamicPlotMapGoogle } from '@/components/maps/DynamicPlotMapGoogle';
+import { Switch } from '@/components/ui/switch';
 import {
   DynamicPlotTable,
   DynamicTableData,
@@ -74,6 +75,9 @@ export const Plots = () => {
     });
   }, [measurements]);
 
+  // Variable that will control which map is showing
+  const [mapToggle, setMapToggle] = useState(false);
+
   return (
     <>
       <Header />
@@ -81,9 +85,25 @@ export const Plots = () => {
         <div className=" w-5/6 bg-white drop-shadow-lg  p-10 pt-0 mt-0 m-10">
           <h1 className="font-bold  tracking-tighter text-4xl pt-8">
             {decodeCombined('[en]Plots[es]Parcelas', language)}
+            <Switch
+              id="mapSwitch"
+              checked={mapToggle}
+              onClick={() => setMapToggle(!mapToggle)}
+            />
           </h1>
-          {memoizedPlots.length > 0 && (
+
+          {/* Show Leaflet Map by default */}
+          {memoizedPlots.length > 0 && !mapToggle && (
             <MemoizedDynamicPlotMapLeaflet
+              setSelectedPlot={setSelectedPlot}
+              selectedPlot={selectedPlot}
+              plots={memoizedPlots}
+            />
+          )}
+
+          {/* Show Google Map when switch is clicked */}
+          {memoizedPlots.length > 0 && mapToggle && (
+            <MemoizedDynamicPlotMapGoogle
               setSelectedPlot={setSelectedPlot}
               selectedPlot={selectedPlot}
               plots={memoizedPlots}
