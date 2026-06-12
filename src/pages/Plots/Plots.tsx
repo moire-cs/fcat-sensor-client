@@ -11,10 +11,25 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import axios from 'axios';
 import { useLanguage } from '@/LocalizationProvider';
 import { decodeCombined } from '@/lib/utils';
+import { isAuthenticated } from '@/lib/auth';
+import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogDescription,
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 export const Plots = () => {
   const [selectedPlot, setSelectedPlot] = useState<string | null>(null);
   const selectedPlotRef = useRef(selectedPlot);
+  const [deletePlotId, setDeletePlotId] = useState<string | null>(null);
+  const [editingPlot, setEditingPlot] = useState<Plot | null>(null);
+  const [editPlot, setEditPlot] = useState<Partial<Plot>>({});
   const [measurements, setMeasurements] = useState<LastMeasurementsObject>({
     nodes: [],
     sensors: [],
@@ -78,6 +93,21 @@ export const Plots = () => {
     setTableData([selected, ...rest]);
   }, [selectedPlot]);
 
+  const handleUpdatePlot = async () => {
+    if (!editingPlot) return;
+    await axios.patch(`/api/plots/updatePlot/${editingPlot.id}`, { plot: editPlot });
+    setEditingPlot(null);
+    setEditPlot({});
+    await fetchData();
+  };
+
+  const handleDeletePlot = async (id: string) => {
+    await axios.delete(`/api/plots/deletePlot/${id}`);
+    if (selectedPlot === id) setSelectedPlot(null);
+    setDeletePlotId(null);
+    await fetchData();
+  };
+
   // Variable that will control which map is showing
   const [mapToggle, setMapToggle] = useState(false);
 
@@ -123,11 +153,80 @@ export const Plots = () => {
           <DynamicPlotTable
             setSelectedPlot={setSelectedPlot}
             selectedPlot={selectedPlot}
+            onEditPlot={isAuthenticated() ? (plot) => { setEditingPlot(plot); setEditPlot(plot); } : undefined}
             data={tableData}
             language={language}
           />
         </div>
       </div>
+      <Dialog open={editingPlot !== null} onOpenChange={(open) => { if (!open) { setEditingPlot(null); setEditPlot({}); } }}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{decodeCombined('[en]Edit Plot[es]Editar parcela', language)}</DialogTitle>
+            <DialogDescription>
+              {decodeCombined('[en]Update the plot details.[es]Actualice los detalles de la parcela.', language)}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid gap-2">
+              <Label>{decodeCombined('[en]Description[es]Descripción', language)}</Label>
+              <Input
+                value={editPlot.description ?? ''}
+                onChange={(e) => setEditPlot({ ...editPlot, description: e.target.value })}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label>{decodeCombined('[en]Latitude[es]Latitud', language)}</Label>
+              <Input
+                type="number"
+                value={editPlot.latitude ?? ''}
+                onChange={(e) => setEditPlot({ ...editPlot, latitude: parseFloat(e.target.value) })}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label>{decodeCombined('[en]Longitude[es]Longitud', language)}</Label>
+              <Input
+                type="number"
+                value={editPlot.longitude ?? ''}
+                onChange={(e) => setEditPlot({ ...editPlot, longitude: parseFloat(e.target.value) })}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="destructive" onClick={() => editingPlot && setDeletePlotId(editingPlot.id)}>
+              {decodeCombined('[en]Delete[es]Eliminar', language)}
+            </Button>
+            <Button variant="outline" onClick={() => { setEditingPlot(null); setEditPlot({}); }}>
+              {decodeCombined('[en]Cancel[es]Cancelar', language)}
+            </Button>
+            <Button onClick={handleUpdatePlot}>
+              {decodeCombined('[en]Save[es]Guardar', language)}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={deletePlotId !== null} onOpenChange={(open) => { if (!open) setDeletePlotId(null); }}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{decodeCombined('[en]Delete Plot[es]Eliminar parcela', language)}</DialogTitle>
+            <DialogDescription>
+              {decodeCombined(
+                '[en]Are you sure you want to delete this plot? This action cannot be undone.[es]¿Está seguro de que desea eliminar esta parcela? Esta acción no se puede deshacer.',
+                language,
+              )}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDeletePlotId(null)}>
+              {decodeCombined('[en]Cancel[es]Cancelar', language)}
+            </Button>
+            <Button variant="destructive" onClick={() => deletePlotId && handleDeletePlot(deletePlotId)}>
+              {decodeCombined('[en]Delete[es]Eliminar', language)}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 };
