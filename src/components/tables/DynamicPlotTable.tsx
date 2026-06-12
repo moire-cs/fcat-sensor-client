@@ -1,21 +1,23 @@
 import { DataTable } from '@/components/ui/data-table';
 import { Measurement, Plot, Sensor, SensorNode } from '@/lib/types';
-import { CellContext, ColumnDef } from '@tanstack/react-table';
-import { LucideBatteryWarning } from 'lucide-react';
+import { ColumnDef } from '@tanstack/react-table';
 import { SensorNodeCell } from './cell/sensorNodeCell';
-import { Progress } from '../ui/progress';
 import { LastMeasurementsCell } from './cell/lastMeasurementsCell';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 import { LastSeenCell } from './cell/lastSeenCell';
 import { Language } from '@/LocalizationProvider';
 import { decodeCombined } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+
 export const columnFactory: ({
     setSelectedPlot,
     selectedPlot,
+    onEditPlot,
     language,
 }: {
     selectedPlot: string | null;
     setSelectedPlot: (val: string | null) => void;
+    onEditPlot?: (plot: Plot) => void;
     language: Language;
 }) => ColumnDef<
     Plot & {
@@ -23,7 +25,20 @@ export const columnFactory: ({
         sensors: Array<Sensor>;
         lastMeasurements: Array<Measurement>;
     }
->[] = ({ setSelectedPlot, selectedPlot, language }) => [
+>[] = ({ setSelectedPlot, selectedPlot, onEditPlot, language }) => [
+    ...(onEditPlot ? [{
+        id: 'actions',
+        header: '',
+        cell: ({ row }: { row: { original: Plot } }) => (
+            <Button
+                variant="outline"
+                size="sm"
+                onClick={() => onEditPlot(row.original)}
+            >
+                {decodeCombined('[en]Edit[es]Editar', language)}
+            </Button>
+        ),
+    }] : []),
     {
         header: decodeCombined('[en]Plot ID[es]ID de Parcela', language),
         accessorKey: 'id',
@@ -61,9 +76,6 @@ export const columnFactory: ({
             };
             const id = cell.row.original.id as string;
 
-            console.log('Location Cell Row Original:', cell.row.original);
-            console.log('Location Cell Plot ID:', id);
-
             return (
                 <div
                     onClick={() => {
@@ -78,7 +90,6 @@ export const columnFactory: ({
             );
         },
     },
-
     {
         header: decodeCombined(
             '[en]Last Measurements[es]Últimas mediciones',
@@ -95,23 +106,24 @@ export const columnFactory: ({
             );
         },
     },
-
 ];
 
 export const DynamicPlotTable = ({
     data,
     selectedPlot,
     setSelectedPlot,
+    onEditPlot,
     language,
 }: {
     data: DynamicTableData;
     selectedPlot: string | null;
     setSelectedPlot: (val: string | null) => void;
+    onEditPlot?: (plot: Plot) => void;
     language: Language;
 }) => {
     const columns = useMemo(
-        () => columnFactory({ setSelectedPlot, selectedPlot, language }),
-        [setSelectedPlot, selectedPlot, language],
+        () => columnFactory({ setSelectedPlot, selectedPlot, onEditPlot, language }),
+        [setSelectedPlot, selectedPlot, onEditPlot, language],
     );
     const highlightRow = useCallback(
         (row: DynamicTableData[number]) => row.id === selectedPlot,
