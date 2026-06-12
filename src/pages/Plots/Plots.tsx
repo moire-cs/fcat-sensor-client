@@ -169,6 +169,13 @@ export const Plots = () => {
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid gap-2">
+              <Label>{decodeCombined('[en]Plot ID[es]ID de Parcela', language)}</Label>
+              <Input
+                value={editPlot.id ?? ''}
+                onChange={(e) => setEditPlot({ ...editPlot, id: e.target.value })}
+              />
+            </div>
+            <div className="grid gap-2">
               <Label>{decodeCombined('[en]Description[es]Descripción', language)}</Label>
               <Input
                 value={editPlot.description ?? ''}
