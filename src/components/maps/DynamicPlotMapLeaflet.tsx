@@ -5,6 +5,7 @@ import {
   Marker,
   Popup,
   useMapEvents,
+  LayersControl,
 } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import markerIconPng from 'leaflet/dist/images/marker-icon.png';
@@ -19,6 +20,25 @@ import {
   useLanguage,
 } from '@/LocalizationProvider';
 import { decodeCombined } from '@/lib/utils';
+
+function ZoomDisplay() { /* some code to display zoom level on leaflet map --mt */
+  const [zoom, setZoom] = useState<number | null>(null);
+  useMapEvents({
+    zoom: (e) => {
+      setZoom(e.target.getZoom());
+    },
+    load: (e) => {
+      setZoom(e.target.getZoom());
+    },
+  });
+  return (
+    <div className="leaflet-top leaflet-left" style={{ marginTop: '80px' }}>
+      <div className="leaflet-control leaflet-bar" style={{ padding: '4px 8px', background: 'white' }}>
+        Zoom: {zoom ?? '...'}
+      </div>
+    </div>
+  );
+}
 
 export const DynamicPlotMap = ({
   plots,
@@ -81,18 +101,32 @@ export const DynamicPlotMap = ({
         </p>
       )}
       <div className="h-[300px] md:h-[600px]">
-        {/* Leaflet Map Implementation */}
+        {/* Leaflet Map Implementation 
+	    FIXME: hardcoded IP address below only works at FCAT */}
         <MapContainer
           center={getCenter()}
           zoom={getZoom()}
           style={{ height: '100%', width: '100%' }}
         >
-          {/* OpenStreetMap Tile Layer */}
-          <TileLayer
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          />
+          <LayersControl position="topright">
+            <LayersControl.BaseLayer checked name="OpenStreetMap">
+              <TileLayer
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              />
+            </LayersControl.BaseLayer>
 
+            <LayersControl.Overlay checked name="FCAT Orthomosaic">
+              <TileLayer 
+                url="http://192.168.1.106:8888/orthomosaic/{z}/{x}/{y}.png"
+                maxZoom={22}
+                maxNativeZoom={22}
+                tms={true}
+              />
+            </LayersControl.Overlay>
+          </LayersControl>
+
+            <ZoomDisplay />  {/* this is where we show the zoom level */ }
           {/* Markers for each plot */}
           {plots.map((plot) => (
             <Marker
