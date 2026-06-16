@@ -155,7 +155,7 @@ export const DynamicPlotMap = ({
 	  
           <LayersControl.Overlay checked name="FCAT Orthomosaic">
               <TileLayer 
-                url="http://192.168.1.106:8888/orthomosaic/{z}/{x}/{y}.png"
+                url="http://192.168.1.8:8888/orthomosaic/{z}/{x}/{y}.png"
                 maxZoom={22}
                 maxNativeZoom={22}
                 tms={true}
