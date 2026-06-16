@@ -113,6 +113,8 @@ export const DynamicPlotMap = ({
               <TileLayer
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+		maxNativeZoom={18}
+                maxZoom={22}
               />
             </LayersControl.BaseLayer>
 
@@ -135,6 +137,8 @@ export const DynamicPlotMap = ({
             <TileLayer
               url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}"
               attribution="Tiles &copy; Esri"
+	      maxNativeZoom={18}
+	      maxZoom={22}
             />
           </LayersControl.BaseLayer>
 	  <LayersControl.BaseLayer name="Stamen Terrain">
@@ -142,6 +146,7 @@ export const DynamicPlotMap = ({
               url="https://tiles.stadiamaps.com/tiles/stamen_terrain/{z}/{x}/{y}{r}.png"
               attribution='&copy; Stadia Maps, &copy; Stamen Design, &copy; OpenMapTiles, &copy; OpenStreetMap'
               maxNativeZoom={18}
+	      maxZoom={22}
             />
           </LayersControl.BaseLayer>
 	  <LayersControl.BaseLayer name="OSM Humanitarian Team">
@@ -149,6 +154,7 @@ export const DynamicPlotMap = ({
               url="https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png"
               attribution='&copy; OpenStreetMap contributors, Tiles style by HOT'
               maxNativeZoom={20}
+	      maxZoom={22}
             />
           </LayersControl.BaseLayer>
 	  
@@ -161,6 +167,16 @@ export const DynamicPlotMap = ({
               />
             </LayersControl.Overlay>
           </LayersControl>
+
+	  <LayersControl.Overlay name="GBIF Occurrences">
+            <TileLayer
+              url="https://api.gbif.org/v2/map/occurrence/density/{z}/{x}/{y}@1x.png?style=classic.point"
+              attribution="GBIF"
+              maxNativeZoom={18}
+              maxZoom={22}
+              opacity={0.7}
+            />
+          </LayersControl.Overlay>
 
             <ZoomDisplay />  {/* this is where we show the zoom level */ }
           {/* Markers for each plot */}
