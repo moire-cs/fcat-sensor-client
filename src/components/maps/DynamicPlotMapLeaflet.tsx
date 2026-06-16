@@ -157,6 +157,15 @@ export const DynamicPlotMap = ({
 	      maxZoom={22}
             />
           </LayersControl.BaseLayer>
+	  <LayersControl.Overlay name="Stadia Hillshade">
+            <TileLayer
+              url="https://tiles.stadiamaps.com/tiles/stamen_terrain_background/{z}/{x}/{y}.png?api_key=1fa003fe-bd94-4ebd-a81c-575f07754096"
+              attribution='&copy; Stadia Maps &copy; OpenStreetMap contributors'
+              maxNativeZoom={18}
+              maxZoom={22}
+              opacity={0.5}
+            />
+          </LayersControl.Overlay>
 	  
             <LayersControl.Overlay checked name="FCAT Orthomosaic">
               <TileLayer 
@@ -172,7 +181,7 @@ export const DynamicPlotMap = ({
               attribution="GBIF"
               maxNativeZoom={18}
               maxZoom={22}
-              opacity={0.7}
+              opacity={0.9}
               />
             </LayersControl.Overlay>
           </LayersControl>
