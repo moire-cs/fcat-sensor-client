@@ -127,6 +127,15 @@ export const DynamicPlotMap = ({
            />
          </LayersControl.BaseLayer>
 
+	 <LayersControl.BaseLayer name="Alidade Smooth">
+           <TileLayer
+             url="https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png"
+             attribution='&copy; Stadia Maps &copy; OpenMapTiles &copy; OpenStreetMap contributors'
+             maxNativeZoom={20}
+             maxZoom={22}
+           />
+         </LayersControl.BaseLayer>
+
 	 <LayersControl.BaseLayer name="Esri Satellite">
             <TileLayer
               url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
@@ -147,6 +156,14 @@ export const DynamicPlotMap = ({
               attribution='&copy; Stadia Maps, &copy; Stamen Design, &copy; OpenMapTiles, &copy; OpenStreetMap'
               maxNativeZoom={18}
 	      maxZoom={22}
+            />
+          </LayersControl.BaseLayer>
+	  <LayersControl.BaseLayer name="Stadia Outdoors">
+            <TileLayer
+              url="https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}{r}.png"
+              attribution='&copy; Stadia Maps &copy; OpenMapTiles &copy; OpenStreetMap contributors'
+              maxNativeZoom={20}
+              maxZoom={22}
             />
           </LayersControl.BaseLayer>
 	  <LayersControl.BaseLayer name="OSM Humanitarian Team">
@@ -183,6 +200,18 @@ export const DynamicPlotMap = ({
               maxZoom={22}
               opacity={0.5}
             />
+           </LayersControl.Overlay>
+	   <LayersControl.Overlay name="Terrain Labels">
+             <TileLayer
+               url="https://tiles.stadiamaps.com/tiles/stamen_terrain_labels/{z}/{x}/{y}{r}.png"
+               opacity={0.8}
+             />
+           </LayersControl.Overlay>
+	   <LayersControl.Overlay name="Terrain Lines">
+             <TileLayer
+               url="https://tiles.stadiamaps.com/tiles/stamen_terrain_lines/{z}/{x}/{y}{r}.png"
+               opacity={0.8}
+             />
            </LayersControl.Overlay>
           </LayersControl>
 
