@@ -158,7 +158,7 @@ export const DynamicPlotMap = ({
             />
           </LayersControl.BaseLayer>
 	  
-          <LayersControl.Overlay checked name="FCAT Orthomosaic">
+            <LayersControl.Overlay checked name="FCAT Orthomosaic">
               <TileLayer 
                 url="http://192.168.1.8:8888/orthomosaic/{z}/{x}/{y}.png"
                 maxZoom={22}
@@ -166,17 +166,16 @@ export const DynamicPlotMap = ({
                 tms={true}
               />
             </LayersControl.Overlay>
-          </LayersControl>
-
-	  <LayersControl.Overlay name="GBIF Occurrences">
-            <TileLayer
+	    <LayersControl.Overlay name="GBIF Occurrences">
+              <TileLayer
               url="https://api.gbif.org/v2/map/occurrence/density/{z}/{x}/{y}@1x.png?style=classic.point"
               attribution="GBIF"
               maxNativeZoom={18}
               maxZoom={22}
               opacity={0.7}
-            />
-          </LayersControl.Overlay>
+              />
+            </LayersControl.Overlay>
+          </LayersControl>
 
             <ZoomDisplay />  {/* this is where we show the zoom level */ }
           {/* Markers for each plot */}
