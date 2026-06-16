@@ -120,7 +120,8 @@ export const DynamicPlotMap = ({
             <TileLayer
              url="https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png"
              attribution='Map data: &copy; OpenStreetMap contributors, SRTM | Map style: &copy; OpenTopoMap (CC-BY-SA)'
-             maxZoom={17}
+             maxNativeZoom={17}
+	     maxZoom={22}
            />
          </LayersControl.BaseLayer>
 
@@ -128,28 +129,26 @@ export const DynamicPlotMap = ({
             <TileLayer
               url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
               attribution="Tiles &copy; Esri"
-              maxZoom={19}
             />
           </LayersControl.BaseLayer>
 	  <LayersControl.BaseLayer name="Esri Topo">
             <TileLayer
               url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}"
               attribution="Tiles &copy; Esri"
-              maxZoom={19}
             />
           </LayersControl.BaseLayer>
 	  <LayersControl.BaseLayer name="Stamen Terrain">
             <TileLayer
               url="https://tiles.stadiamaps.com/tiles/stamen_terrain/{z}/{x}/{y}{r}.png"
               attribution='&copy; Stadia Maps, &copy; Stamen Design, &copy; OpenMapTiles, &copy; OpenStreetMap'
-              maxZoom={18}
+              maxNativeZoom={18}
             />
           </LayersControl.BaseLayer>
 	  <LayersControl.BaseLayer name="OSM Humanitarian Team">
             <TileLayer
               url="https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png"
               attribution='&copy; OpenStreetMap contributors, Tiles style by HOT'
-              maxZoom={20}
+              maxNativeZoom={20}
             />
           </LayersControl.BaseLayer>
 	  
