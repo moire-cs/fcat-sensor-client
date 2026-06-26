@@ -110,6 +110,7 @@ export const Plots = () => {
     await axios.delete(`/api/plots/deletePlot/${id}`);
     if (selectedPlot === id) setSelectedPlot(null);
     setDeletePlotId(null);
+    setEditingPlot(null);
     await fetchData();
   };
 
