@@ -13,11 +13,13 @@ export const columnFactory: ({
     setSelectedPlot,
     selectedPlot,
     onEditPlot,
+    onOpenChart,
     language,
 }: {
     selectedPlot: string | null;
     setSelectedPlot: (val: string | null) => void;
     onEditPlot?: (plot: Plot) => void;
+    onOpenChart: (plotId: string, sensor: Sensor) => void;
     language: Language;
 }) => ColumnDef<
     Plot & {
@@ -25,7 +27,7 @@ export const columnFactory: ({
         sensors: Array<Sensor>;
         lastMeasurements: Array<Measurement>;
     }
->[] = ({ setSelectedPlot, selectedPlot, onEditPlot, language }) => [
+>[] = ({ setSelectedPlot, selectedPlot, onEditPlot, onOpenChart, language }) => [
     ...(onEditPlot ? [{
         id: 'actions',
         header: '',
@@ -102,6 +104,7 @@ export const columnFactory: ({
                     lastMeasurements={cell.row.original.lastMeasurements}
                     sensors={cell.row.original.sensors}
                     plotId={cell.row.original.id}
+                    onOpenChart={onOpenChart}
                 />
             );
         },
@@ -113,17 +116,19 @@ export const DynamicPlotTable = ({
     selectedPlot,
     setSelectedPlot,
     onEditPlot,
+    onOpenChart,
     language,
 }: {
     data: DynamicTableData;
     selectedPlot: string | null;
     setSelectedPlot: (val: string | null) => void;
     onEditPlot?: (plot: Plot) => void;
+    onOpenChart: (plotId: string, sensor: Sensor) => void;
     language: Language;
 }) => {
     const columns = useMemo(
-        () => columnFactory({ setSelectedPlot, selectedPlot, onEditPlot, language }),
-        [setSelectedPlot, selectedPlot, onEditPlot, language],
+        () => columnFactory({ setSelectedPlot, selectedPlot, onEditPlot, onOpenChart, language }),
+        [setSelectedPlot, selectedPlot, onEditPlot, onOpenChart, language],
     );
     const highlightRow = useCallback(
         (row: DynamicTableData[number]) => row.id === selectedPlot,
@@ -135,6 +140,7 @@ export const DynamicPlotTable = ({
                 columns={columns}
                 data={data}
                 highlightRow={highlightRow}
+                getRowId={(row) => row.id}
             />
         </div>
     );

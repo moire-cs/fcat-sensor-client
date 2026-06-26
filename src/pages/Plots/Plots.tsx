@@ -5,6 +5,10 @@ import {
   DynamicPlotTable,
   DynamicTableData,
 } from '@/components/tables/DynamicPlotTable';
+import {
+  MeasurementChartDialog,
+  ChartTarget,
+} from '@/components/tables/cell/MeasurementChartDialog';
 import { Header } from '@/components/ui/header';
 import { LastMeasurementsObject, SensorNode, Plot, Sensor } from '@/lib/types';
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -27,6 +31,7 @@ import { Label } from '@/components/ui/label';
 export const Plots = () => {
   const [selectedPlot, setSelectedPlot] = useState<string | null>(null);
   const selectedPlotRef = useRef(selectedPlot);
+  const [chartTarget, setChartTarget] = useState<ChartTarget | null>(null);
   const [deletePlotId, setDeletePlotId] = useState<string | null>(null);
   const [editingPlot, setEditingPlot] = useState<Plot | null>(null);
   const [editPlot, setEditPlot] = useState<Partial<Plot>>({});
@@ -154,11 +159,16 @@ export const Plots = () => {
             setSelectedPlot={setSelectedPlot}
             selectedPlot={selectedPlot}
             onEditPlot={isAuthenticated() ? (plot) => { setEditingPlot(plot); setEditPlot(plot); } : undefined}
+            onOpenChart={(plotId, sensor) => setChartTarget({ plotId, sensor })}
             data={tableData}
             language={language}
           />
         </div>
       </div>
+      <MeasurementChartDialog
+        target={chartTarget}
+        onClose={() => setChartTarget(null)}
+      />
       <Dialog open={editingPlot !== null} onOpenChange={(open) => { if (!open) { setEditingPlot(null); setEditPlot({}); } }}>
         <DialogContent>
           <DialogHeader>

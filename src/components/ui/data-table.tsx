@@ -25,17 +25,21 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   highlightRow?: (row: TData) => boolean;
   data: TData[];
+  // Stable row identity; without it TanStack keys rows by array index.
+  getRowId?: (row: TData) => string;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   highlightRow = () => false,
+  getRowId,
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    getRowId,
   });
 
   return (
