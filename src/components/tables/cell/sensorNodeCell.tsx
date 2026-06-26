@@ -23,7 +23,7 @@ export const SensorNodeCell = ({ plotId }: { plotId: string }) => {
         onClick={onClickHandler}
         className="border p-1 rounded-lg bg-gradient-to-r from-green-200 to-green-100 hover:to-green-200 hover:transition-all"
       >
-        {decodeCombined('[en]Nodes[es]Nodo', language)} {plotId}
+        {decodeCombined('[en]Node[es]Nodo', language)} {plotId}
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
