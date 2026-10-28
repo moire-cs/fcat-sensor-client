@@ -41,6 +41,7 @@ export type SensorNode = {
   id: string;
   plotID: string | null;
   lastSeen: Date | null;
+  hopCount?: number | null; //NEW
 };
 
 export type Sensor = {

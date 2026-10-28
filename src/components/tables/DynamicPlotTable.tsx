@@ -8,6 +8,7 @@ import { LastSeenCell } from './cell/lastSeenCell';
 import { Language } from '@/LocalizationProvider';
 import { decodeCombined } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { Rabbit } from 'lucide-react';
 
 export const columnFactory: ({
     setSelectedPlot,
@@ -47,8 +48,29 @@ export const columnFactory: ({
         header: decodeCombined('[en]Node[es]Nodo', language),
         cell: (cell) => {
             const nodeID = cell.getValue() as string | null;
-            if (!nodeID) return decodeCombined('[en]No Node Assigned[es]Ningún nodo asignado', language);
-            return <SensorNodeCell plotId={nodeID} />;
+
+            if (!nodeID) {
+                return decodeCombined(
+                    '[en]No Node Assigned[es]Ningún nodo asignado',
+                    language
+                );
+            }
+
+            const hopCount = cell.row.original.node?.hopCount; //get hop count for this node
+
+            return (
+                <div className="flex items-center gap-2">
+                    <SensorNodeCell plotId={nodeID} />
+
+                    <div
+                        className="flex items-center gap-1"
+                        title="Mesh hop count"
+                    >
+                        <Rabbit size={16} />
+                        <span>{hopCount ?? '-'}</span>
+                    </div>
+                </div>
+            );
         },
         accessorKey: 'nodeID',
     },
