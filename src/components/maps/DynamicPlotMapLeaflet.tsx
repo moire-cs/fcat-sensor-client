@@ -175,14 +175,6 @@ export const DynamicPlotMap = ({
             />
           </LayersControl.BaseLayer>
           
-            <LayersControl.Overlay checked name="FCAT Orthomosaic">
-              <TileLayer 
-                url="http://192.168.1.8:8888/orthomosaic/{z}/{x}/{y}.png"
-                maxZoom={22}
-                maxNativeZoom={22}
-                tms={true}
-              />
-            </LayersControl.Overlay>
 	    <LayersControl.Overlay name="GBIF Occurrences">
               <TileLayer
               url="https://api.gbif.org/v2/map/occurrence/density/{z}/{x}/{y}@1x.png?style=classic.point"
