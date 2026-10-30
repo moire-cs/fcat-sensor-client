@@ -56,7 +56,7 @@ export const columnFactory: ({
                 );
             }
 
-            const hopCount = cell.row.original.node?.hopCount; //get hop count for this node
+            const hopCount = cell.row.original.node?.hopCount; 
 
             return (
                 <div className="flex items-center gap-2">
